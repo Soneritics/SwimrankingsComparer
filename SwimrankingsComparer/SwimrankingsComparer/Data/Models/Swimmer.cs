@@ -2,15 +2,10 @@
 
 namespace SwimrankingsComparer.Data.Models;
 
-public class Swimmer
+public class Swimmer(string id)
 {
-    public Swimmer(string id)
-    {
-        Id = id;
-    }
+    public string Id { get; set; } = id;
 
-    public string Id { get; set; }
-    
     public string FirstName { get; set; } = string.Empty;
     
     public string LastName { get; set; } = string.Empty;
@@ -22,7 +17,7 @@ public class Swimmer
     
     public int YearOfBirth { get; set; }
     
-    public IEnumerable<Pb> Pbs { get; set; } = new List<Pb>();
+    public List<Pb> Pbs { get; set; } = new List<Pb>();
     
     public DateTime LastUpdated { get; set; } = DateTime.Now;
 }

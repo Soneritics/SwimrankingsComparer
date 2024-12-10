@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Net;
+using System.Text.RegularExpressions;
 using SwimrankingsComparer.Data.Helpers;
 using SwimrankingsComparer.Data.Models;
 
@@ -29,6 +30,7 @@ public static class SwimmerBuilder
     {
         var matchClub = RegexHelper.GetMatchValue(pageContents, @"<div id=""nationclub""><br>(.*?)</div>");
         swimmer.Club = RegexHelper.GetMatchValue(matchClub, @"<br>(.*?)$");
+
         return swimmer;
     }
 
@@ -65,26 +67,89 @@ public static class SwimmerBuilder
             foreach (Match pbLineMatch in pbLines)
             {
                 var pbLine = pbLineMatch.Groups[1].Value.Trim();
-            
-                Console.WriteLine(pbLine);
+                swimmer.Pbs.Add(CreatePbFromLine(pbLine));
             }
         }
 
         return swimmer;
     }
-}
-/*
-    new ()
+    
+    private static Pb CreatePbFromLine(string pbLine)
     {
-        Stroke = Stroke.Freestyle,
-        DistanceInMeters = 50,
-        TimeInMs = 1000,
-        BadLength = 0,
-        Meet = new Meet()
+        var strokeAndDistance = RegexHelper.GetMatchValue(pbLine, @"<td class=""event""><a.*?>(.*?)<");
+        var stroke = RegexHelper.GetMatchValue(strokeAndDistance, @"m (.*?)$");
+        var distance = RegexHelper.GetMatchValue(strokeAndDistance, @"(.*?)m");
+        var poolLength = RegexHelper.GetMatchValue(pbLine, @"<td class=""course"">(.*?)m</td>");
+        var timeString = RegexHelper.GetMatchValue(pbLine, @"a  class=""time"".*?>(.*?)<");
+
+        var meetName = RegexHelper.GetMatchValue(pbLine, @"<td class=""name"">.*?title=""(.*?)""");
+        var meetDate = RegexHelper.GetMatchValue(pbLine, @"<td class=""date"">(.*?)</td>");
+        var meetCity = RegexHelper.GetMatchValue(pbLine, @"<td class=""city"">.*?title="".*?"">(.*?)<");
+        
+        return new ()
         {
-            Name = "Test Meet",
-            Date = "2021-01-01",
-            City = "Test City"
-        }
+            Stroke = stroke.ToStroke(),
+            DistanceInMeters = int.TryParse(distance, out var distanceValue) ? distanceValue : 0,
+            PoolLength = int.TryParse(poolLength, out var poolLengthValue) ? poolLengthValue : 0,
+            TimeInMs = timeString.ToTimeInMs(),
+            Meet = new ()
+            {
+                Name = WebUtility.HtmlDecode(meetName),
+                Date = WebUtility.HtmlDecode(meetDate),
+                City = WebUtility.HtmlDecode(meetCity)
+            }
+        };
     }
-*/
+}
+
+public static class StrokeExtensions
+{
+    public static Stroke ToStroke(this string stroke)
+    {
+        return stroke.ToLowerInvariant() switch
+        {
+            "freestyle" => Stroke.Freestyle,
+            "backstroke" => Stroke.Backstroke,
+            "breaststroke" => Stroke.Breaststroke,
+            "butterfly" => Stroke.Butterfly,
+            "medley" => Stroke.Medley,
+            _ => Stroke.Unknown
+        };
+    }
+}
+
+public static class TimeStringExtensions
+{
+    public static int ToTimeInMs(this string timeString)
+    {
+        var timeParts = timeString.Split(':');
+        
+        var minutes = 0;
+
+        if (timeParts.Length == 2)
+        {
+            if (!int.TryParse(timeParts[0], out minutes))
+            {
+                return 0;
+            }
+        }
+
+        var secondsAndMs = timeParts.Last().Split('.');
+        if (secondsAndMs.Length != 2)
+        {
+            return 0;
+        }
+
+        if (!int.TryParse(secondsAndMs[0], out var seconds))
+        {
+            return 0;
+        }
+
+        if (!int.TryParse(secondsAndMs[1], out var ms))
+        {
+            return 0;
+        }
+
+        return (minutes * 60 + seconds) * 1000 + ms;
+    }
+}

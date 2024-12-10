@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Text.Json.Serialization;
 using Microsoft.Azure.Cosmos;
 using SwimrankingsComparer.Data.Models.Cosmos;
 
@@ -55,7 +56,7 @@ public class CosmosRepository : IRepository
         var result = await GetContainer<T>()
             .ReadItemAsync<CosmosDocument<T>>(id, new PartitionKey(id));
 
-        return result.Resource.Data;
+        return result.Resource.Data!;
     }
 
     public async Task DeleteAsync<T>(string id)
