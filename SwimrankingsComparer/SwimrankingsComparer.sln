@@ -1,0 +1,21 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwimrankingsComparer", "SwimrankingsComparer\SwimrankingsComparer.csproj", "{CA31ACA5-9FBF-41AD-9844-12B9DBF12F37}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution", "Solution", "{6DAFCFDD-6482-4C8B-B95B-89A6C5C04F32}"
+	ProjectSection(SolutionItems) = preProject
+		..\.gitignore = ..\.gitignore
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CA31ACA5-9FBF-41AD-9844-12B9DBF12F37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA31ACA5-9FBF-41AD-9844-12B9DBF12F37}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA31ACA5-9FBF-41AD-9844-12B9DBF12F37}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA31ACA5-9FBF-41AD-9844-12B9DBF12F37}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,70 @@
+﻿@page "/management"
+@using SwimrankingsComparer.Data
+@using SwimrankingsComparer.Data.Models
+@using System.Text.Json
+@using SwimrankingsComparer.Data.Services
+@inject SwimmerService Service
+
+<PageTitle>@Constants.AppName - Gegevensbeheer</PageTitle>
+
+<h2>Zwemmersoverzicht</h2>
+<div class="row mb-3">
+    @if (swimmers == null)
+    {
+        @:Bezig met laden...
+    }
+    else if (!swimmers.Any())
+    {
+        @:Er staan nog geen zwemmers in het systeem.
+    }
+    else
+    {
+        <table class="table table-bordered table-striped">
+            @foreach (var swimmer in swimmers)
+            {
+                <tr>
+                    <td>@swimmer.LastName, @swimmer.FirstName</td>
+                    <td>@swimmer.LastUpdated.ToString("dd/MM/yyyy hh:mm")</td>
+                    <td>update now</td>
+                </tr>
+            }
+        </table>
+    }
+</div>
+
+<h2>Zwemmer toevoegen</h2>
+<div class="row mb-3">
+    <div class="col-md-4">
+        <div class="row">
+            <div class="col-auto"><label class="col-form-label">Swimrankings id:</label></div>
+            <div class="col"><input @bind="swimmerId" class="form-control" /></div>
+        </div>
+    </div>
+</div>
+
+<p><button class="btn btn-primary" @onclick="AddSwimmerAsync">Toevoegen &raquo;</button></p>
+
+@if (swimmerData != null)
+{
+    <pre>
+    @JsonSerializer.Serialize(swimmerData, new JsonSerializerOptions { WriteIndented = true })
+    </pre>
+}
+
+@code {
+    private readonly SwimmerService swimmerService;
+    private IEnumerable<Swimmer>? swimmers;
+    private Swimmer? swimmerData;
+    private string swimmerId;
+
+    protected override async Task OnInitializedAsync()
+    {
+        swimmers = await Service.GetAllSwimmersAsync();
+    }
+    
+    private async Task AddSwimmerAsync()
+    {
+        swimmerData = await Service.GetSwimmerAsync(swimmerId);
+        swimmers = await Service.GetAllSwimmersAsync();
+    }
+}
