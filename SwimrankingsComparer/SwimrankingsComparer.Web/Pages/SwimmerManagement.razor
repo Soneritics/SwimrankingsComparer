@@ -1,0 +1,69 @@
+﻿@page "/management"
+@using SwimrankingsComparer.Application.Helpers
+@using SwimrankingsComparer.Application.Models
+@using SwimrankingsComparer.Application.Services
+@inject SwimmerService Service
+
+<PageTitle>@Constants.AppName - Gegevensbeheer</PageTitle>
+
+<h2>Zwemmersoverzicht</h2>
+<div class="row mb-3">
+    @if (_swimmers == null)
+    {
+        @:Bezig met laden...
+    }
+    else if (!_swimmers.Any())
+    {
+        @:Er staan nog geen zwemmers in het systeem.
+    }
+    else
+    {
+        <table class="table table-bordered table-striped">
+            @foreach (var swimmer in _swimmers)
+            {
+                <tr>
+                    <td>@swimmer.LastName, @swimmer.FirstName <a href="@SwimrankingsUrlHelper.Get(swimmer.Id)" target="_blank"><span class="oi-location">s</span></a></td>
+                    <td>@swimmer.LastUpdated.ToString("dd/MM/yyyy hh:mm")</td>
+                    <td><button class="btn btn-secondary btn-sm" @onclick="() => UpdateSwimmerAsync(swimmer.Id)">update now</button></td>
+                </tr>
+            }
+        </table>
+    }
+</div>
+
+<h2>Zwemmer toevoegen</h2>
+<div class="row mb-3">
+    <div class="col-md-4">
+        <div class="row">
+            <div class="col-auto"><label class="col-form-label">Swimrankings id:</label></div>
+            <div class="col"><input @bind="_swimmerId" class="form-control" /></div>
+        </div>
+    </div>
+</div>
+
+<p><button class="btn btn-primary" @onclick="AddSwimmerAsync">Toevoegen &raquo;</button></p>
+
+@code {
+    private readonly SwimmerService _swimmerService;
+    private IEnumerable<Swimmer>? _swimmers;
+    private string _swimmerId = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _swimmers = await Service.GetAllSwimmersAsync();
+    }
+    
+    private async Task AddSwimmerAsync()
+    {
+        _swimmers = null;
+        await Service.GetSwimmerAsync(_swimmerId, true);
+        _swimmers = await Service.GetAllSwimmersAsync();
+    }
+    
+    private async Task UpdateSwimmerAsync(string id)
+    {
+        _swimmers = null;
+        await Service.GetSwimmerAsync(id, true);
+        _swimmers = await Service.GetAllSwimmersAsync();
+    }
+}
