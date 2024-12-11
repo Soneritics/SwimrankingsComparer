@@ -7,5 +7,9 @@ public enum Stroke
     Backstroke = 2,
     Breaststroke = 3,
     Freestyle = 4,
-    Medley = 5    
+    Medley = 5,
+    ButterflyLap = 6,
+    BackstrokeLap = 7,
+    BreaststrokeLap = 8,
+    FreestyleLap = 9
 }

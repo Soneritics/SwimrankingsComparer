@@ -20,8 +20,8 @@ public static class SwimmerBuilder
         lastName = RegexHelper.GetMatchValue(athleteMatch, @"(.*?),", lastName).Trim();
         firstName = RegexHelper.GetMatchValue(athleteMatch, @",(.*?)<br>", firstName).Trim();
 
-        swimmer.FirstName = firstName;
-        swimmer.LastName = lastName;
+        swimmer.FirstName = firstName.ToNameCasing();
+        swimmer.LastName = lastName.ToNameCasing();
         swimmer.YearOfBirth = yearOfBirth;
         
         return swimmer;
@@ -78,7 +78,7 @@ public static class SwimmerBuilder
     private static Pb CreatePbFromLine(string pbLine)
     {
         var strokeAndDistance = RegexHelper.GetMatchValue(pbLine, @"<td class=""event""><a.*?>(.*?)<");
-        var stroke = RegexHelper.GetMatchValue(strokeAndDistance, @"m (.*?)$").Replace(" Lap", "");
+        var stroke = RegexHelper.GetMatchValue(strokeAndDistance, @"m (.*?)$");
         var distance = RegexHelper.GetMatchValue(strokeAndDistance, @"(.*?)m");
         var poolLength = RegexHelper.GetMatchValue(pbLine, @"<td class=""course"">(.*?)m</td>");
         var timeString = RegexHelper.GetMatchValue(pbLine, @"a  class=""time"".*?>(.*?)<");

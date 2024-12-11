@@ -13,6 +13,10 @@ public static class StrokeExtensions
             "breaststroke" => Stroke.Breaststroke,
             "butterfly" => Stroke.Butterfly,
             "medley" => Stroke.Medley,
+            "freestyle lap" => Stroke.FreestyleLap,
+            "backstroke lap" => Stroke.BackstrokeLap,
+            "breaststroke lap" => Stroke.BreaststrokeLap,
+            "butterfly lap" => Stroke.ButterflyLap,
             _ => Stroke.Unknown
         };
     }
