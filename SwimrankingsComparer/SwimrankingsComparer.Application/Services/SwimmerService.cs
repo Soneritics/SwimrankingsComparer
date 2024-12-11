@@ -36,7 +36,7 @@ public class SwimmerService(IRepository repository, HttpClient httpClient)
 
     private async Task<Swimmer> GetSwimmerFromSource(string swimrankingsId)
     {
-        var pageContents = await GetSwimmerPageContentsAsync(swimrankingsId);
+        var pageContents = await GetSwimRankingsPageContentsAsync(swimrankingsId);
         var swimmer = new Swimmer(swimrankingsId)
             .WithAthleteDetails(pageContents)
             .WithClub(pageContents)
@@ -46,6 +46,6 @@ public class SwimmerService(IRepository repository, HttpClient httpClient)
         return swimmer;
     }
     
-    private Task<string> GetSwimmerPageContentsAsync(string swimrankingsId) =>
+    private Task<string> GetSwimRankingsPageContentsAsync(string swimrankingsId) =>
         httpClient.GetStringAsync(SwimrankingsUrlHelper.Get(swimrankingsId));
 }

@@ -1,0 +1,53 @@
+﻿@page "/pbs"
+@using SwimrankingsComparer.Application.Models
+@using SwimrankingsComparer.Application.Services
+@inject SwimmerService Service
+
+<PageTitle>@Constants.AppName - Prs</PageTitle>
+
+<h1>PRs</h1>
+<div class="row mb-3">
+    @if (_swimmers == null)
+    {
+        @:Bezig met laden...
+    }
+    else if (!_swimmers.Any())
+    {
+        @:Er staan nog geen zwemmers in het systeem.
+    }
+    else
+    {
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <div class="row">
+                    <div class="col-auto"><label class="col-form-label">Zwemmer:</label></div>
+                    <div class="col">
+                        <select @onchange="e => _swimmer = _swimmers.Single(s => s.Id.Equals(e.Value?.ToString()))" class="form-control">
+                            <option value="">-- Select an option --</option>
+                            @foreach (var swimmer in _swimmers)
+                            {
+                                <option value="@swimmer.Id">@swimmer.LastName @swimmer.FirstName</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        @if (_swimmer != null)
+        {
+            <p>Je hebt gekozen: @_swimmer.FirstName</p>
+        }
+    }
+</div>
+
+@code {
+    private readonly SwimmerService _swimmerService;
+    private IEnumerable<Swimmer>? _swimmers;
+    private Swimmer? _swimmer;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _swimmers = await Service.GetAllSwimmersAsync();
+    }
+}
