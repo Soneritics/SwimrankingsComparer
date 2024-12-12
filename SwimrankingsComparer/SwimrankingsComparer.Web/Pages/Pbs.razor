@@ -22,7 +22,7 @@
                 <div class="row">
                     <div class="col-auto"><label class="col-form-label">Zwemmer:</label></div>
                     <div class="col">
-                        <select @onchange="e => _swimmer = _swimmers.Single(s => s.Id.Equals(e.Value?.ToString()))" class="form-control">
+                        <select @onchange="ShowSwimmerData" class="form-control">
                             <option value="">-- Select an option --</option>
                             @foreach (var swimmer in _swimmers)
                             {
@@ -36,18 +36,51 @@
         
         @if (_swimmer != null)
         {
-            <p>Je hebt gekozen: @_swimmer.FirstName</p>
+            <h2>@_swimmer.FirstName @_swimmer.LastName</h2>
+            <p>
+                Geboortejaar: @_swimmer.YearOfBirth<br />
+                Club: @_swimmer.Club<br />
+                Laatste update: @_swimmer.LastUpdated.ToString("dd/MM/yyyy hh:mm")
+            </p>
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Slag</th>
+                        <th>Afstand</th>
+                        <th>Tijd</th>
+                        <th>Zwembad</th>
+                        <th>Datum</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var pb in _swimmer.Pbs.OrderBy(o => o.Stroke).ThenBy(o => o.DistanceInMeters))
+                {
+                    <tr>
+                        <td>@pb.Stroke</td>
+                        <td>@(pb.DistanceInMeters)m</td>
+                        <td>@pb.SwimTime.DisplayValue</td>
+                        <td>@(pb.PoolLength)m</td>
+                        <td>@pb.Meet?.Date</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
         }
     }
 </div>
 
 @code {
-    private readonly SwimmerService _swimmerService;
     private IEnumerable<Swimmer>? _swimmers;
-    private Swimmer? _swimmer;
+    private SwimmerData? _swimmer;
 
     protected override async Task OnInitializedAsync()
     {
         _swimmers = await Service.GetAllSwimmersAsync();
+    }
+    
+    private async Task ShowSwimmerData(ChangeEventArgs e)
+    {
+        _swimmer = null;
+        _swimmer = await Service.GetSwimmerDataAsync(e.Value!.ToString()!);
     }
 }

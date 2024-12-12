@@ -8,18 +8,18 @@
 
 <h2>Zwemmersoverzicht</h2>
 <div class="row mb-3">
-    @if (_swimmers == null)
+    @if (_swimmerData == null)
     {
         @:Bezig met laden...
     }
-    else if (!_swimmers.Any())
+    else if (!_swimmerData.Any())
     {
         @:Er staan nog geen zwemmers in het systeem.
     }
     else
     {
         <table class="table table-bordered table-striped">
-            @foreach (var swimmer in _swimmers)
+            @foreach (var swimmer in _swimmerData)
             {
                 <tr>
                     <td>@swimmer.LastName, @swimmer.FirstName <a href="@SwimrankingsUrlHelper.Get(swimmer.Id)" target="_blank"><span class="oi-location">s</span></a></td>
@@ -44,26 +44,25 @@
 <p><button class="btn btn-primary" @onclick="AddSwimmerAsync">Toevoegen &raquo;</button></p>
 
 @code {
-    private readonly SwimmerService _swimmerService;
-    private IEnumerable<Swimmer>? _swimmers;
+    private IEnumerable<SwimmerData>? _swimmerData;
     private string _swimmerId = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
-        _swimmers = await Service.GetAllSwimmersAsync();
+        _swimmerData = await Service.GetAllSwimmerDataAsync();
     }
     
     private async Task AddSwimmerAsync()
     {
-        _swimmers = null;
-        await Service.GetSwimmerAsync(_swimmerId, true);
-        _swimmers = await Service.GetAllSwimmersAsync();
+        _swimmerData = null;
+        await Service.GetSwimmerDataAsync(_swimmerId, true);
+        _swimmerData = await Service.GetAllSwimmerDataAsync();
     }
     
     private async Task UpdateSwimmerAsync(string id)
     {
-        _swimmers = null;
-        await Service.GetSwimmerAsync(id, true);
-        _swimmers = await Service.GetAllSwimmersAsync();
+        _swimmerData = null;
+        await Service.GetSwimmerDataAsync(id, true);
+        _swimmerData = await Service.GetAllSwimmerDataAsync();
     }
 }

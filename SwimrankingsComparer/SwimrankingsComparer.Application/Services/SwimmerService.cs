@@ -8,20 +8,32 @@ public class SwimmerService(IRepository repository, HttpClient httpClient)
 {
     public async Task<IEnumerable<Swimmer>> GetAllSwimmersAsync()
     {
-        return (await repository.GetListAsync<Swimmer>(r => true))
+        return (await repository.GetListAsync<SwimmerData>(r => true))
+            .OrderBy(s => s.LastName)
+            .ThenBy(s => s.FirstName)
+            .Select(s => new Swimmer(s.Id)
+            {
+                FirstName = s.FirstName,
+                LastName = s.LastName,
+            });
+    }
+    
+    public async Task<IEnumerable<SwimmerData>> GetAllSwimmerDataAsync()
+    {
+        return (await repository.GetListAsync<SwimmerData>(r => true))
             .OrderBy(s => s.LastName)
             .ThenBy(s => s.FirstName);
     }
     
-    public async Task<Swimmer> GetSwimmerAsync(string swimrankingsId, bool forceReload = false)
+    public async Task<SwimmerData> GetSwimmerDataAsync(string swimrankingsId, bool forceReload = false)
     {
-        var swimmerExists = await repository.ExistsAsync<Swimmer>(swimrankingsId);
+        var swimmerExists = await repository.ExistsAsync<SwimmerData>(swimrankingsId);
         if (!forceReload && swimmerExists)
         {
-            return await repository.GetAsync<Swimmer>(swimrankingsId);
+            return await repository.GetAsync<SwimmerData>(swimrankingsId);
         }
         
-        var swimmer = await GetSwimmerFromSource(swimrankingsId);
+        var swimmer = await GetSwimmerDataFromSource(swimrankingsId);
         if (swimmerExists)
         {
             await repository.UpdateAsync(swimrankingsId, swimmer);   
@@ -34,10 +46,10 @@ public class SwimmerService(IRepository repository, HttpClient httpClient)
         return swimmer;
     }
 
-    private async Task<Swimmer> GetSwimmerFromSource(string swimrankingsId)
+    private async Task<SwimmerData> GetSwimmerDataFromSource(string swimrankingsId)
     {
         var pageContents = await GetSwimRankingsPageContentsAsync(swimrankingsId);
-        var swimmer = new Swimmer(swimrankingsId)
+        var swimmer = new SwimmerData(swimrankingsId)
             .WithAthleteDetails(pageContents)
             .WithClub(pageContents)
             .WithGender(pageContents)

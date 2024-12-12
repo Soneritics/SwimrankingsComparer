@@ -6,9 +6,9 @@ using SwimrankingsComparer.Application.Models;
 
 namespace SwimrankingsComparer.Application.Services;
 
-public static class SwimmerBuilder
+public static class SwimmerDataBuilder
 {
-    public static Swimmer WithAthleteDetails(this Swimmer swimmer, string pageContents)
+    public static SwimmerData WithAthleteDetails(this SwimmerData swimmerData, string pageContents)
     {
         var firstName = "Unknown";
         var lastName = "Unknown";
@@ -20,22 +20,22 @@ public static class SwimmerBuilder
         lastName = RegexHelper.GetMatchValue(athleteMatch, @"(.*?),", lastName).Trim();
         firstName = RegexHelper.GetMatchValue(athleteMatch, @",(.*?)<br>", firstName).Trim();
 
-        swimmer.FirstName = firstName.ToNameCasing();
-        swimmer.LastName = lastName.ToNameCasing();
-        swimmer.YearOfBirth = yearOfBirth;
+        swimmerData.FirstName = firstName.ToNameCasing();
+        swimmerData.LastName = lastName.ToNameCasing();
+        swimmerData.YearOfBirth = yearOfBirth;
         
-        return swimmer;
+        return swimmerData;
     }
 
-    public static Swimmer WithClub(this Swimmer swimmer, string pageContents)
+    public static SwimmerData WithClub(this SwimmerData swimmerData, string pageContents)
     {
         var matchClub = RegexHelper.GetMatchValue(pageContents, @"<div id=""nationclub""><br>(.*?)</div>");
-        swimmer.Club = RegexHelper.GetMatchValue(matchClub, @"<br>(.*?)$");
+        swimmerData.Club = RegexHelper.GetMatchValue(matchClub, @"<br>(.*?)$");
 
-        return swimmer;
+        return swimmerData;
     }
 
-    public static Swimmer WithGender(this Swimmer swimmer, string pageContents)
+    public static SwimmerData WithGender(this SwimmerData swimmerData, string pageContents)
     {
         var gender = Gender.Unknown;
         
@@ -49,14 +49,14 @@ public static class SwimmerBuilder
             gender = Gender.Female;
         }
 
-        swimmer.Gender = gender;
+        swimmerData.Gender = gender;
 
-        return swimmer;
+        return swimmerData;
     }
 
-    public static Swimmer WithPbs(this Swimmer swimmer, string pageContents)
+    public static SwimmerData WithPbs(this SwimmerData swimmerData, string pageContents)
     {
-        swimmer.Pbs = new List<Pb>();
+        swimmerData.Pbs = new List<Pb>();
         
         var pbTable = RegexHelper.GetMatchValue(
             Regex.Replace(pageContents, @"escape\('(.*?)'\)", string.Empty),
@@ -68,11 +68,11 @@ public static class SwimmerBuilder
             foreach (Match pbLineMatch in pbLines)
             {
                 var pbLine = pbLineMatch.Groups[1].Value.Trim();
-                swimmer.Pbs.Add(CreatePbFromLine(pbLine));
+                swimmerData.Pbs.Add(CreatePbFromLine(pbLine));
             }
         }
 
-        return swimmer;
+        return swimmerData;
     }
     
     private static Pb CreatePbFromLine(string pbLine)

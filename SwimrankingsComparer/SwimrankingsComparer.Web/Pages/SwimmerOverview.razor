@@ -31,11 +31,10 @@
 </div>
 
 @code {
-    private readonly SwimmerService _swimmerService;
-    private IEnumerable<Swimmer>? _swimmers;
+    private IEnumerable<SwimmerData>? _swimmers;
 
     protected override async Task OnInitializedAsync()
     {
-        _swimmers = await Service.GetAllSwimmersAsync();
+        _swimmers = await Service.GetAllSwimmerDataAsync();
     }
 }
