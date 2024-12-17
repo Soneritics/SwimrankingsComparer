@@ -1,5 +1,6 @@
 ﻿@page "/pbs"
-@using SwimrankingsComparer.Application.Models
+@using SwimRankings.Api.Models
+@using SwimrankingsComparer.Application.Extensions
 @using SwimrankingsComparer.Application.Services
 @inject SwimmerService Service
 
@@ -56,11 +57,11 @@
                 @foreach (var pb in _swimmer.Pbs.OrderBy(o => o.Stroke).ThenBy(o => o.DistanceInMeters))
                 {
                     <tr>
-                        <td>@pb.Stroke</td>
-                        <td>@(pb.DistanceInMeters)m</td>
-                        <td>@pb.SwimTime.DisplayValue</td>
-                        <td>@(pb.PoolLength)m</td>
-                        <td>@pb.Meet?.Date</td>
+                        <td>@pb.Stroke.ToDutch()</td>
+                        <td class="align-right">@(pb.DistanceInMeters)m</td>
+                        <td class="align-right">@pb.SwimTime.DisplayValue</td>
+                        <td class="align-right">@(pb.PoolLength)m</td>
+                        <td class="align-right">@pb.Meet?.Date</td>
                     </tr>
                 }
                 </tbody>

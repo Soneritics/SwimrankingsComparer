@@ -1,23 +1,23 @@
-﻿using SwimrankingsComparer.Application.Models;
+﻿using SwimRankings.Api.Models;
 
 namespace SwimrankingsComparer.Application.Extensions;
 
 public static class StrokeExtensions
 {
-    public static Stroke ToStroke(this string stroke)
+    public static string ToDutch(this Stroke stroke)
     {
-        return stroke.ToLowerInvariant() switch
+        return stroke switch
         {
-            "freestyle" => Stroke.Freestyle,
-            "backstroke" => Stroke.Backstroke,
-            "breaststroke" => Stroke.Breaststroke,
-            "butterfly" => Stroke.Butterfly,
-            "medley" => Stroke.Medley,
-            "freestyle lap" => Stroke.FreestyleLap,
-            "backstroke lap" => Stroke.BackstrokeLap,
-            "breaststroke lap" => Stroke.BreaststrokeLap,
-            "butterfly lap" => Stroke.ButterflyLap,
-            _ => Stroke.Unknown
+            Stroke.Butterfly => "Vlinderslag",
+            Stroke.Backstroke => "Rugslag",
+            Stroke.Breaststroke => "Schoolslag",
+            Stroke.Freestyle => "Vrije slag",
+            Stroke.Medley => "Wisselslag",
+            Stroke.ButterflyLap => "Vlinderslag (lap)",
+            Stroke.BackstrokeLap => "Rugslag (lap)",
+            Stroke.BreaststrokeLap => "Schoolslag (lap)",
+            Stroke.FreestyleLap => "Vrije slag (lap)",
+            _ => "Onbekend"
         };
     }
 }

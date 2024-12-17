@@ -1,10 +1,10 @@
-using SwimrankingsComparer.Application.Helpers;
-using SwimrankingsComparer.Application.Models;
+using SwimRankings.Api;
+using SwimRankings.Api.Models;
 using SwimrankingsComparer.Application.Repositories;
 
 namespace SwimrankingsComparer.Application.Services;
 
-public class SwimmerService(IRepository repository, HttpClient httpClient)
+public class SwimmerService(IRepository repository, ISwimmerApi swimmerApi)
 {
     public async Task<IEnumerable<Swimmer>> GetAllSwimmersAsync()
     {
@@ -46,18 +46,6 @@ public class SwimmerService(IRepository repository, HttpClient httpClient)
         return swimmer;
     }
 
-    private async Task<SwimmerData> GetSwimmerDataFromSource(string swimrankingsId)
-    {
-        var pageContents = await GetSwimRankingsPageContentsAsync(swimrankingsId);
-        var swimmer = new SwimmerData(swimrankingsId)
-            .WithAthleteDetails(pageContents)
-            .WithClub(pageContents)
-            .WithGender(pageContents)
-            .WithPbs(pageContents);
-
-        return swimmer;
-    }
-    
-    private Task<string> GetSwimRankingsPageContentsAsync(string swimrankingsId) =>
-        httpClient.GetStringAsync(SwimrankingsUrlHelper.Get(swimrankingsId));
+    private async Task<SwimmerData> GetSwimmerDataFromSource(string swimrankingsId) =>
+        await swimmerApi.GetAsync(swimrankingsId);
 }

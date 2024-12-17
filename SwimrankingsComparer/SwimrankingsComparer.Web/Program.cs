@@ -1,3 +1,4 @@
+using SwimRankings.Api;
 using SwimrankingsComparer.Application.Repositories;
 using SwimrankingsComparer.Application.Services;
 using SwimrankingsComparer.Web;
@@ -7,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddHttpClient();
 builder.Services.AddServerSideBlazor();
+builder.Services.AddSingleton<ISwimmerApi, SwimmerApi>();
 builder.Services.AddSingleton<SwimmerService>();
 builder.Services.AddSingleton<IRepository>(r => new CosmosRepository(
     builder.Configuration["CosmosConnectionString"]!,
