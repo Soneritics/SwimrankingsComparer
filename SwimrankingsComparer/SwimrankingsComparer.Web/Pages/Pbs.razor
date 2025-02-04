@@ -24,7 +24,7 @@
                     <div class="col-auto"><label class="col-form-label">Zwemmer:</label></div>
                     <div class="col">
                         <select @onchange="ShowSwimmerData" class="form-control">
-                            <option value="">-- Select an option --</option>
+                            <option value="">-- Kies een zwemmer --</option>
                             @foreach (var swimmer in _swimmers)
                             {
                                 <option value="@swimmer.Id">@swimmer.LastName @swimmer.FirstName</option>
