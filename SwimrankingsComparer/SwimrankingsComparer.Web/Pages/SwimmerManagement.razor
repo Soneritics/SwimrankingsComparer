@@ -22,7 +22,7 @@
             @foreach (var swimmer in _swimmerData)
             {
                 <tr>
-                    <td>@swimmer.LastName, @swimmer.FirstName <a href="@SwimrankingsUrlHelper.Get(swimmer.Id)" target="_blank"><span class="oi-location">s</span></a></td>
+                    <td>@swimmer.LastName, @swimmer.FirstName <a href="@SwimrankingsUrlHelper.Get(swimmer.Id, "nl")" target="_blank"><span class="oi-location">s</span></a></td>
                     <td>@swimmer.LastUpdated.ToString("dd/MM/yyyy hh:mm")</td>
                     <td><button class="btn btn-secondary btn-sm" @onclick="() => UpdateSwimmerAsync(swimmer.Id)">update now</button></td>
                 </tr>
