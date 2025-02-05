@@ -6,6 +6,9 @@ namespace SwimrankingsComparer.Application.Services;
 
 public class SwimmerService(IRepository repository, ISwimmerApi swimmerApi)
 {
+    public async Task DeleteSwimmerAsync(string swimrankingsId) =>
+        await repository.DeleteAsync<SwimmerData>(swimrankingsId);
+
     public async Task<IEnumerable<Swimmer>> GetAllSwimmersAsync()
     {
         return (await repository.GetListAsync<SwimmerData>(r => true))

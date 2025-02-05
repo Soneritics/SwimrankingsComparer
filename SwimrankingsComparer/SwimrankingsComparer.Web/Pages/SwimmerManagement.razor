@@ -25,6 +25,7 @@
                     <td>@swimmer.LastName, @swimmer.FirstName <a href="@SwimrankingsUrlHelper.Get(swimmer.Id, "nl")" target="_blank"><span class="oi-location">s</span></a></td>
                     <td>@swimmer.LastUpdated.ToString("dd/MM/yyyy hh:mm")</td>
                     <td><button class="btn btn-secondary btn-sm" @onclick="() => UpdateSwimmerAsync(swimmer.Id)">update now</button></td>
+                    <td><button class="btn btn-danger btn-sm" @onclick="() => DeleteSwimmerAsync(swimmer.Id)">delete</button></td>
                 </tr>
             }
         </table>
@@ -63,6 +64,13 @@
     {
         _swimmerData = null;
         await Service.GetSwimmerDataAsync(id, true);
+        _swimmerData = await Service.GetAllSwimmerDataAsync();
+    }
+    
+    private async Task DeleteSwimmerAsync(string id)
+    {
+        _swimmerData = null;
+        await Service.DeleteSwimmerAsync(id);
         _swimmerData = await Service.GetAllSwimmerDataAsync();
     }
 }
