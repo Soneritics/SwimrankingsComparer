@@ -20,6 +20,17 @@
     {
         <div class="mb-3">
             <p>Slagen</p>
+            <p>
+                @{ var selectedCheckboxes = _checkboxItems.Where(i => i.IsChecked).ToList(); }
+                @if (!selectedCheckboxes.Any())
+                {
+                    <em>Geen slagen gekozen</em>
+                }
+                else
+                {
+                    @string.Join(", ", selectedCheckboxes.Select(i => $"{i.Distance} {i.Stroke.ToDutch()}")).ToLower()
+                }
+            </p>
             @foreach (var item in _checkboxItems)
             {
                 <div>
