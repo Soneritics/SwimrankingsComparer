@@ -77,7 +77,7 @@
                             if (item.IsChecked)
                             {
                                 var pb = swimmer.Pbs.Where(pb => pb.Stroke == item.Stroke && pb.DistanceInMeters == item.Distance)?.OrderBy(s => s.SwimTime.TimeInMs).FirstOrDefault();
-                                <td title="@pb?.SwimTime.DisplayValue - @item.Distance @item.Stroke.ToDutch() - @pb?.Meet?.Date">
+                                <td title="@pb?.SwimTime.DisplayValue - @item.Distance @item.Stroke.ToDutch() - @pb?.Meet?.Date?.DisplayValue()">
                                     @pb?.SwimTime.DisplayValue
                                 </td>
                             }
