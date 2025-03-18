@@ -40,42 +40,53 @@
             }
         </div>
     
-        <table class="table table-bordered table-striped">
-            <thead>
-                <tr>
-                    <th>Achternaam</th>
-                    <th>Voornaam</th>
-                    <th>Geboortejaar</th>
-                    @foreach (var item in _checkboxItems)
-                    {
-                        if (item.IsChecked)
+        var filteredSwimmers = _swimmers.ToList();
+        
+        if (!filteredSwimmers.Any())
+        {
+            <p><em>Er zijn geen zwemmers die voldoen aan de filters.</em></p> 
+        }
+        else
+        {
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Achternaam</th>
+                        <th>Voornaam</th>
+                        <th>Geslacht</th>
+                        <th>Geboortejaar</th>
+                        @foreach (var item in _checkboxItems)
                         {
-                            <th>@item.Distance @item.Stroke.ToDutch()</th>
+                            if (item.IsChecked)
+                            {
+                                <th>@item.Distance @item.Stroke.ToDutch()</th>
+                            }
                         }
-                    }
-                </tr>
-            </thead>
-            <tbody>
-            @foreach (var swimmer in _swimmers)
-            {
-                <tr>
-                    <td>@swimmer.LastName</td>
-                    <td>@swimmer.FirstName</td>
-                    <td>@swimmer.YearOfBirth</td>
-                    @foreach (var item in _checkboxItems)
-                    {
-                        if (item.IsChecked)
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var swimmer in filteredSwimmers)
+                {
+                    <tr>
+                        <td>@swimmer.LastName</td>
+                        <td>@swimmer.FirstName</td>
+                        <td>@swimmer.Gender.ToDutch()</td>
+                        <td>@swimmer.YearOfBirth</td>
+                        @foreach (var item in _checkboxItems)
                         {
-                            var pb = swimmer.Pbs.Where(pb => pb.Stroke == item.Stroke && pb.DistanceInMeters == item.Distance)?.OrderBy(s => s.SwimTime.TimeInMs).FirstOrDefault();
-                            <td title="@pb?.SwimTime.DisplayValue - @item.Distance @item.Stroke.ToDutch() - @pb?.Meet?.Date">
-                                @pb?.SwimTime.DisplayValue
-                            </td>
+                            if (item.IsChecked)
+                            {
+                                var pb = swimmer.Pbs.Where(pb => pb.Stroke == item.Stroke && pb.DistanceInMeters == item.Distance)?.OrderBy(s => s.SwimTime.TimeInMs).FirstOrDefault();
+                                <td title="@pb?.SwimTime.DisplayValue - @item.Distance @item.Stroke.ToDutch() - @pb?.Meet?.Date">
+                                    @pb?.SwimTime.DisplayValue
+                                </td>
+                            }
                         }
-                    }
-                </tr>
-            }
-            </tbody>
-        </table>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        }
     }
 </div>
 
