@@ -1,0 +1,104 @@
+﻿@page "/history"
+@using SwimRankings.Api.Models
+@using SwimrankingsComparer.Application.Extensions
+@using SwimrankingsComparer.Application.Services
+@inject SwimmerService Service
+
+<PageTitle>@Constants.AppName - Historie</PageTitle>
+
+<h1>Historie</h1>
+<div class="row mb-3">
+    @if (_swimmers == null)
+    {
+        @:Bezig met laden...
+    }
+    else if (!_swimmers.Any())
+    {
+        @:Er staan nog geen zwemmers in het systeem.
+    }
+    else
+    {
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <div class="row">
+                    <div class="col-auto"><label class="col-form-label">Zwemmer:</label></div>
+                    <div class="col">
+                        <select @onchange="ShowSwimmerData" class="form-control">
+                            <option value="">-- Kies een zwemmer --</option>
+                            @foreach (var swimmer in _swimmers)
+                            {
+                                <option value="@swimmer.Id">@swimmer.LastName @swimmer.FirstName</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        @if (_swimmer != null)
+        {
+            <h2>@_swimmer.FirstName @_swimmer.LastName</h2>
+            <p>
+                Geboortejaar: @_swimmer.YearOfBirth<br />
+                Club: @_swimmer.Club<br />
+                Laatste update: @_swimmer.LastUpdated.ToString("dd/MM/yyyy hh:mm")
+            </p>
+
+            if (_history == null)
+            {
+                <p><em>Er is nog geen historie opgeslagen voor @_swimmer.FirstName @_swimmer.LastName.</em></p>
+            }
+            else
+            {
+                foreach (var h in _history.HistoryCollection)
+                {
+                    <h3>@(h.DistanceInMeters)m @h.Stroke.ToDutch() (@(h.PoolLength)m bad)</h3>
+                    
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <table class="table table-bordered table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th>Datum</th>
+                                        <th>Tijd</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach (var pb in h.History.OrderByDescending(o => o.SwimTime.TimeInMs))
+                                    {
+                                        <tr>
+                                            <td>@pb.Date.DisplayValue()</td>
+                                            <td>@pb.SwimTime.DisplayValue</td>
+                                        </tr>
+                                    }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        }
+    }
+</div>
+
+@code {
+    private IEnumerable<Swimmer>? _swimmers;
+    private SwimmerData? _swimmer;
+    private Application.Models.History? _history;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _swimmers = await Service.GetAllSwimmersAsync();
+    }
+    
+    private async Task ShowSwimmerData(ChangeEventArgs e)
+    {
+        _swimmer = null;
+        _history = null;
+        
+        _swimmer = await Service.GetSwimmerDataAsync(e.Value!.ToString()!);
+        _history = await Service.GetHistoryAsync(e.Value!.ToString()!);
+    }
+}

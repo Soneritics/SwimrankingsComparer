@@ -48,6 +48,9 @@ public class SwimmerService(IRepository repository, ISwimmerApi swimmerApi)
         return swimmer;
     }
 
+    public async Task<History?> GetHistoryAsync(string swimrankingsId) =>
+        await repository.GetAsync<History>(swimrankingsId);
+
     private async Task<SwimmerData> GetSwimmerDataFromSource(string swimrankingsId) =>
         await swimmerApi.GetAsync(swimrankingsId);
 
