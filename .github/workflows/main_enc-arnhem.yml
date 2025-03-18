@@ -24,13 +24,13 @@ jobs:
         run: dotnet build --configuration Release SwimrankingsComparer/SwimrankingsComparer.sln
       
       - name: dotnet publish
-        run: dotnet publish -c Release -o SwimrankingsComparer/SwimrankingsComparer.sln
+        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/SwimrankingsComparer SwimrankingsComparer/SwimrankingsComparer.sln
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: .net-app
-          path: SwimrankingsComparer
+          path: ${{env.DOTNET_ROOT}}/SwimrankingsComparer
 
   deploy:
     runs-on: ubuntu-latest
