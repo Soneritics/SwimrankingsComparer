@@ -61,7 +61,7 @@
                         <td class="align-right">@(pb.DistanceInMeters)m</td>
                         <td class="align-right">@pb.SwimTime.DisplayValue</td>
                         <td class="align-right">@(pb.PoolLength)m</td>
-                        <td class="align-right">@pb.Meet?.Date</td>
+                        <td class="align-right">@pb.Meet?.Date?.DisplayValue()</td>
                     </tr>
                 }
                 </tbody>

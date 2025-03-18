@@ -1,6 +1,6 @@
 ﻿using System.Net;
 using Microsoft.Azure.Cosmos;
-using SwimrankingsComparer.Application.Models.Cosmos;
+using SwimrankingsComparer.Application.Models;
 
 namespace SwimrankingsComparer.Application.Repositories;
 
@@ -63,14 +63,14 @@ public class CosmosRepository : IRepository
         await GetContainer<T>().DeleteItemAsync<CosmosDocument<T>>(id, new PartitionKey(id));
     }
 
-    public async Task<List<T>> GetListAsync<T>(Func<T, bool> predicate)
-    {
-        return GetContainer<T>().GetItemLinqQueryable<CosmosDocument<T>>(true)
-            .Where(r => r.Type.Equals(typeof(T).Name))
-            .Select(r => r.Data)
-            .Where(predicate)
-            .ToList();
-    }
+    public Task<List<T>> GetListAsync<T>(Func<T, bool> predicate) =>
+        Task.FromResult(
+            GetContainer<T>()
+                .GetItemLinqQueryable<CosmosDocument<T>>(true)
+                .Where(r => r.Type.Equals(typeof(T).Name))
+                .Select(r => r.Data)!
+                .Where(predicate)
+                .ToList());
     
     private Container GetContainer<T> ()
     {
