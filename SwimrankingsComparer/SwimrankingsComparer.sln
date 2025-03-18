@@ -5,6 +5,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution", "Solution", "{6DAFCFDD-6482-4C8B-B95B-89A6C5C04F32}"
 	ProjectSection(SolutionItems) = preProject
 		..\.gitignore = ..\.gitignore
+		..\.github\workflows\main_enc-arnhem.yml = ..\.github\workflows\main_enc-arnhem.yml
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwimrankingsComparer.Application", "SwimrankingsComparer.Application\SwimrankingsComparer.Application.csproj", "{A5720B84-4B36-4E27-A775-685F7DC8D5F6}"
