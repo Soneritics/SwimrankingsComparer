@@ -79,7 +79,7 @@ public class SwimmerService(IRepository repository, ISwimmerApi swimmerApi)
                      && h.DistanceInMeters == pb.DistanceInMeters
                      && h.PoolLength.Equals(pb.PoolLength));
 
-            if (!historyStrokeIdentifier.History.Any(h => h.SwimTime.TimeInMs < pb.SwimTime.TimeInMs))
+            if (!historyStrokeIdentifier.History.Any(h => h.SwimTime.TimeInMs <= pb.SwimTime.TimeInMs))
             {
                 historyStrokeIdentifier.History.Add(new PbOnDate(
                     pb.Meet?.Date ?? new Date(DateTime.Now.Day, DateTime.Now.Month, DateTime.Now.Year),
