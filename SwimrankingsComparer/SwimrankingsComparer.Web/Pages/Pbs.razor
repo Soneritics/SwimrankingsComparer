@@ -1,4 +1,5 @@
-﻿@page "/pbs"
+﻿@attribute [Authorize(Policy = "EmailPolicy")]
+@page "/pbs"
 @using SwimRankings.Api.Models
 @using SwimrankingsComparer.Application.Extensions
 @using SwimrankingsComparer.Application.Services

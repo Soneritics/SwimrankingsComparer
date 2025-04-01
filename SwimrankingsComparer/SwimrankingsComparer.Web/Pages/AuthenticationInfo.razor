@@ -1,0 +1,32 @@
+﻿@inject AuthenticationStateProvider AuthStateProvider
+@page "/authentication-info"
+@using System.Text.Json
+@using System.Text.Json.Serialization
+
+<h3>AuthenticationInfo</h3>
+<p>
+    Je bent niet geauthenticeerd.<br>
+    Dit zijn de details:
+</p>
+<pre name="usercontext-pre">
+@if (_authState != null)
+{
+    @JsonSerializer.Serialize(_authState, new JsonSerializerOptions
+    {
+        WriteIndented = true,
+        Converters =
+        {
+            new JsonStringEnumConverter()
+        }
+    })
+}
+</pre>
+
+@code {
+    private AuthenticationState? _authState;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _authState = await AuthStateProvider.GetAuthenticationStateAsync();
+    }
+}

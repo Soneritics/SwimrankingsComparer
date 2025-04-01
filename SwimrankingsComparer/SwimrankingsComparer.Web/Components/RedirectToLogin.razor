@@ -1,7 +1,8 @@
-﻿<h3>RedirectToLogin</h3>
-
-<p>Not allowed</p>
+﻿@inject NavigationManager Navigation
 
 @code {
-    
+    protected override void OnInitialized()
+    {
+        Navigation.NavigateTo("/authentication-info", forceLoad: true);
+    }
 }
