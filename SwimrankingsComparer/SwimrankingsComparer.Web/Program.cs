@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using SwimRankings.Api;
 using SwimrankingsComparer.Application.Repositories;
 using SwimrankingsComparer.Application.Services;
@@ -10,7 +11,7 @@ builder.Services.AddHttpClient();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<ISwimmerApi, SwimmerApi>();
 builder.Services.AddSingleton<SwimmerService>();
-builder.Services.AddSingleton<IRepository>(r => new CosmosRepository(
+builder.Services.AddSingleton<IRepository>(_ => new CosmosRepository(
     builder.Configuration["CosmosConnectionString"]!,
     builder.Configuration["CosmosDatabaseName"]!));
 
@@ -22,6 +23,19 @@ builder.Services.AddHsts(options =>
 });
 
 Constants.AppName = builder.Configuration["AppName"] ?? Constants.AppName;
+Constants.AllowedUsers = builder.Configuration["AllowedUsers"]?.ToLowerInvariant().Split(";").ToList() ?? [];
+
+if (Constants.AllowedUsers.Any())
+{
+    builder
+        .Services
+        .AddAuthorizationBuilder()
+        .AddPolicy(
+            "EmailPolicy",
+            policy => policy.RequireAssertion(context =>
+                context.User.HasClaim(
+                    c => c.Type == ClaimTypes.Email && Constants.AllowedUsers.Contains(c.Value.ToLowerInvariant()))));
+}
 
 var app = builder.Build();
 
